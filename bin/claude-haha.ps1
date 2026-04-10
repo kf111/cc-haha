@@ -8,9 +8,13 @@ $CallerDir = (Get-Location).Path
 # Change to root directory
 Set-Location $RootDir
 
+# Use absolute paths for bun to avoid module resolution issues
+$CliScript = Join-Path $RootDir "src\entrypoints\cli.tsx"
+$RecoveryScript = Join-Path $RootDir "src\localRecoveryCli.ts"
+
 # Check if CLAUDE_CODE_FORCE_RECOVERY_CLI is set to 1
 if ($env:CLAUDE_CODE_FORCE_RECOVERY_CLI -eq "1") {
-    bun --env-file=.env ./src/localRecoveryCli.ts $args
+    bun --env-file=.env $RecoveryScript $args
 } else {
-    bun --env-file=.env ./src/entrypoints/cli.tsx $args
+    bun --env-file=.env $CliScript $args
 }
